@@ -1,0 +1,41 @@
+{
+  "name": "marathon-slack",
+  "version": "0.1.0",
+  "description": "Listen to Marathon's Event Bus and send selected event types to a Slack WebHook",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tobilg/marathon-slack.git"
+  },
+  "keywords": [
+    "Mesos",
+    "Marathon",
+    "Slack",
+    "integration",
+    "bot",
+    "event bus",
+    "webhook"
+  ],
+  "author": {
+    "name": "TobiLG",
+    "email": "tobilg@gmail.com",
+    "url": "https://github.com/tobilg"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tobilg/marathon-slack/issues"
+  },
+  "homepage": "https://github.com/tobilg/marathon-slack#readme",
+  "dependencies": {
+    "eventsource": "^0.2.1",
+    "request": "^2.74.0",
+    "request-promise": "^4.1.1",
+    "require-environment-variables": "^1.1.2",
+    "winston": "^2.2.0",
+    "winston-daily-rotate-file": "^1.3.0"
+  }
+}
