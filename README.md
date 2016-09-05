@@ -21,7 +21,7 @@ You can configure `marathon-slack` via environment variables.
 * `MARATHON_PROTOCOL`: The protocol to access the Marathon API with. Can be either `http` or `https`. Default is `http`. 
 * `SLACK_WEBHOOK_URL`: The Slack Webhook URL (**mandatory**).
 * `SLACK_CHANNEL`: The name of the Slack channel to send the messages to (must contain `#`). Default is `#marathon`.
-* `EVENT_TYPES`: The comma-separated list of event types you want to have sent to Slack, separated by comma. By default, all event types are activated. See below for a complete list.
+* `EVENT_TYPES`: The comma-separated list of event types you want to have sent to Slack, separated by comma. By default, only `deployment_info`, `deployment_success` and `deployment_failed` are activated. See below for a complete list.
 * `LOG_LEVEL`: The log level (e.g. `info`, `debug`, `error`), default is `info`.
 
 ### Event types
@@ -55,7 +55,7 @@ You can run this via Marathon
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "tobilg/marathon-slack:0.1.1",
+      "image": "tobilg/marathon-slack:0.1.2",
       "network": "HOST",
       "privileged": false,
       "parameters": [],
