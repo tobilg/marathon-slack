@@ -55,7 +55,7 @@ You can run this via Marathon
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "tobilg/marathon-slack:0.1.0",
+      "image": "tobilg/marathon-slack:0.1.1",
       "network": "HOST",
       "privileged": false,
       "parameters": [],
@@ -64,6 +64,9 @@ You can run this via Marathon
   },
   "env": {
     "SLACK_WEBHOOK_URL": "YOUR_WEBHOOK_URL"
+  },
+  "labels":{
+   "MARATHON_SINGLE_INSTANCE_APP": "true"
   }
 }
 ``` 
