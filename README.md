@@ -55,7 +55,7 @@ You can run this via Marathon
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "tobilg/marathon-slack:0.1.2",
+      "image": "tobilg/marathon-slack:0.1.3",
       "network": "HOST",
       "privileged": false,
       "parameters": [],
