@@ -43,7 +43,39 @@ Please also see the Marathon Event Bus [docs](https://mesosphere.github.io/marat
 
 ## Running
 
-You can run this via Marathon
+### Installing on DC/OS as package
+
+**Via CLI**
+
+You need to create an `options.json` file locally, before you can install the package. This is because you have to add your individual Slack WebHook URL to the configuration.
+
+An example:
+
+```
+{
+  "marathon-slack": {
+    "slack_webhook_url": "https://hooks.slack.com/services/...YOUR_WEBHOOK_URL..."
+  }
+}
+```
+
+The above is the minimal configuration necessary to start the `marathon-slack` package. You can also customize the Slack channel (property `slack_channel`) or the list of event types to be published (property `event_types`). For the full list of configuration options, see the [marathon.json.mustache file](https://github.com/mesosphere/universe/blob/version-3.x/repo/packages/M/marathon-slack/1/marathon.json.mustache).
+
+Once you prepared the `options.json` file, you can install the package with the following command:
+
+`dcos package install marathon-slack --options options.json`
+
+You should then see the service `marathon-slack` running on the services tab in the DC/OS UI.
+
+**Via Universe**
+
+In the DC/OS Universe tab, either search for `slack`, or scroll down the list of package until you find the `marathon-slack` package. Then, click on the `Install` button. Once the modal window pops up, click on `Advanced Installation`. You can customize the settings for the package, the only thing you **have** to configure is the `slack_webhook_url`. This has to fit to the Slack WebHook's URL you created before. Then click on `Review and Install`, and if everything is ok, on `Install`.
+
+You should then see the service `marathon-slack` running on the services tab in the DC/OS UI.
+
+### Installing via Marathon
+
+You can run this on Marathon like this:
 
 ```
 {
@@ -64,9 +96,6 @@ You can run this via Marathon
   },
   "env": {
     "SLACK_WEBHOOK_URL": "YOUR_WEBHOOK_URL"
-  },
-  "labels":{
-   "MARATHON_SINGLE_INSTANCE_APP": "true"
   }
 }
 ``` 
