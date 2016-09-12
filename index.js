@@ -8,7 +8,7 @@ var MarathonEventListener = require("./lib/MarathonEventListener");
 
 // Define options
 var options = {
-    marathonUrl: process.env.MARATHON_URL || "master.mesos",
+    marathonUrl: process.env.MARATHON_HOST || "master.mesos",
     marathonPort: process.env.MARATHON_PORT || 8080,
     marathonProtocol: process.env.MARATHON_PROTOCOL || "http",
     slackWebHook: process.env.SLACK_WEBHOOK_URL,
