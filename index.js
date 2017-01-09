@@ -8,7 +8,7 @@ const MarathonEventBusClient = require("marathon-event-bus-client");
 const SlackHandler = require("./lib/SlackHandler");
 
 // Define Marathon options
-var options = {
+let options = {
     marathonUrl: process.env.MARATHON_HOST || "master.mesos",
     marathonPort: process.env.MARATHON_PORT || 8080,
     marathonProtocol: process.env.MARATHON_PROTOCOL || "http"
