@@ -18,7 +18,7 @@ You can configure `marathon-slack` via environment variables.
 
 ### Environment variables
 
-* `MARATHON_HOST`: The Marathon Host (hostname or ip address) where Marathon lives. Default is `leader.mesos`, so if you don't use Mesos DNS you'll have to specify this. 
+* `MARATHON_HOST`: The Marathon Host (hostname or ip address) where Marathon lives. Default is `master.mesos`, so if you don't use Mesos DNS you'll have to specify this. If you want to use basic auth with Marathon, use `user:password@server.domain.com` as value. 
 * `MARATHON_PORT`: The port under which Marathon is running. Default is `8080`.
 * `MARATHON_PROTOCOL`: The protocol to access the Marathon API with. Can be either `http` or `https`. Default is `http`. 
 * `SLACK_WEBHOOK_URL`: The Slack Webhook URL (**mandatory**).
@@ -88,7 +88,7 @@ You can run this on Marathon like this:
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "tobilg/marathon-slack:0.1.3",
+      "image": "tobilg/marathon-slack:0.3.0",
       "network": "HOST",
       "privileged": false,
       "parameters": [],
