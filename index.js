@@ -31,7 +31,7 @@ if (process.env.EVENT_TYPES) {
         options.eventTypes = [process.env.EVENT_TYPES];
     }
 } else { // Use the default
-    options.eventTypes = ["deployment_info", "deployment_success", "deployment_failed", "deployment_step_success", "deployment_step_failure", "group_change_success", "group_change_failed", "failed_health_check_event", "health_status_changed_event", "unhealthy_task_kill_event"]
+    options.eventTypes = ["deployment_info", "deployment_success", "deployment_failed"]
 }
 
 // Placeholder for the handler functions
