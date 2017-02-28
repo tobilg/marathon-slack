@@ -18,7 +18,7 @@ let options = {
 const slackHandler = new SlackHandler({
     slackWebHook: process.env.SLACK_WEBHOOK_URL,
     slackChannel: process.env.SLACK_CHANNEL || "#marathon",
-    slackBotName: process.env.SLACK_BOT_NAME || "Marathon Event Bot"
+    slackBotName: process.env.SLACK_BOT_NAME || "Marathon Event Bot",
     marathonUrl: options.marathonUrl,
     marathonPort: options.marathonPort
 });
