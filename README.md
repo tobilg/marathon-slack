@@ -23,6 +23,7 @@ You can configure `marathon-slack` via environment variables.
 * `MARATHON_PROTOCOL`: The protocol to access the Marathon API with. Can be either `http` or `https`. Default is `http`. 
 * `SLACK_WEBHOOK_URL`: The Slack Webhook URL (**mandatory**).
 * `SLACK_CHANNEL`: The name of the Slack channel to send the messages to (must contain `#`). Default is `#marathon`.
+* `SLACK_BOT_NAME`: The name of the Slack bot to send the messages from. Default is `Marathon Event Bot`.
 * `EVENT_TYPES`: The comma-separated list of event types you want to have sent to Slack, separated by comma. By default, only `deployment_info`, `deployment_success` and `deployment_failed` are activated. See below for a complete list.
 
 ### Event types
