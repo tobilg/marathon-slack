@@ -28,7 +28,7 @@ You can configure `marathon-slack` via environment variables.
 
 ### Event types
 
-Each of the following event types is exposed to Slack if not configured via the `EVENT_TYPES` environment variables:
+Each of the following event types is pushed to Slack if not configured via the `EVENT_TYPES` environment variables:
 
 * `deployment_info`
 * `deployment_success`
@@ -40,6 +40,8 @@ Each of the following event types is exposed to Slack if not configured via the 
 * `failed_health_check_event`
 * `health_status_changed_event`
 * `unhealthy_task_kill_event`
+
+An individual, formatted Slack message is currently only for these event types. If another event is received, it will be displayed with a default formatting of event type and timestamp. 
 
 Please also see the Marathon Event Bus [docs](https://mesosphere.github.io/marathon/docs/event-bus.html).
 
