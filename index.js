@@ -9,7 +9,7 @@ const SlackHandler = require("./lib/SlackHandler");
 
 // Define Marathon options
 let options = {
-    marathonUrl: process.env.MARATHON_HOST || "master.mesos",
+    marathonHost: process.env.MARATHON_HOST || "master.mesos",
     marathonPort: process.env.MARATHON_PORT || 8080,
     marathonProtocol: process.env.MARATHON_PROTOCOL || "http"
 };
@@ -18,9 +18,7 @@ let options = {
 const slackHandler = new SlackHandler({
     slackWebHook: process.env.SLACK_WEBHOOK_URL,
     slackChannel: process.env.SLACK_CHANNEL || "#marathon",
-    slackBotName: process.env.SLACK_BOT_NAME || "Marathon Event Bot",
-    marathonUrl: options.marathonUrl,
-    marathonPort: options.marathonPort
+    slackBotName: process.env.SLACK_BOT_NAME || "Marathon Event Bot"
 });
 
 // Define relevant event types
@@ -32,7 +30,7 @@ if (process.env.EVENT_TYPES) {
         options.eventTypes = [process.env.EVENT_TYPES];
     }
 } else { // Use the default
-    options.eventTypes = ["deployment_info", "deployment_success", "deployment_failed"]
+    options.eventTypes = ["deployment_info", "deployment_success", "deployment_failed", "deployment_step_success", "deployment_step_failure", "group_change_success", "group_change_failed", "failed_health_check_event", "health_status_changed_event", "unhealthy_task_kill_event"]
 }
 
 // Placeholder for the handler functions
