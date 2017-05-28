@@ -7,6 +7,9 @@ pids
 *.pid
 *.seed
 
+# scripts
+*.sh
+
 # Dependency directories
 node_modules
 

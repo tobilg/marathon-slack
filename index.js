@@ -39,6 +39,7 @@ let handlers = {};
 // Populate handler functions
 options.eventTypes.forEach(function (eventType) {
     handlers[eventType] = function (name, data) {
+        console.log("data = " + JSON.stringify(data));
         slackHandler.sendMessage(slackHandler.renderMessage({ type: name, data: data }));
     }
 });
