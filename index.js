@@ -11,7 +11,8 @@ const SlackHandler = require("./lib/SlackHandler");
 let options = {
     marathonHost: process.env.MARATHON_HOST || "master.mesos",
     marathonPort: process.env.MARATHON_PORT || 8080,
-    marathonProtocol: process.env.MARATHON_PROTOCOL || "http"
+    marathonProtocol: process.env.MARATHON_PROTOCOL || "http",
+    whitelistRegEx: []
 };
 
 // Instantiate SlackHandler
@@ -33,16 +34,52 @@ if (process.env.EVENT_TYPES) {
     options.eventTypes = ["deployment_info", "deployment_success", "deployment_failed", "deployment_step_success", "deployment_step_failure", "group_change_success", "group_change_failed", "failed_health_check_event", "health_status_changed_event", "unhealthy_task_kill_event"]
 }
 
+if (process.env.APP_ID_REGEXS) {
+    // Use environment variable
+    if (process.env.APP_ID_REGEXS.indexOf(",") > -1) {
+        options.whitelistRegEx = process.env.APP_ID_REGEXS.split(",");
+    } else {
+        options.whitelistRegEx = [process.env.APP_ID_REGEXS];
+    }
+    options.whitelistRegEx = options.whitelistRegEx.map(function(rx) { return new RegExp(rx); });
+} else { // Use the default
+    options.whitelistRegEx = []; 
+}
+
 // Placeholder for the handler functions
 let handlers = {};
 
 // Populate handler functions
 options.eventTypes.forEach(function (eventType) {
     handlers[eventType] = function (name, data) {
-        console.log("data = " + JSON.stringify(data));
-        slackHandler.sendMessage(slackHandler.renderMessage({ type: name, data: data }));
+        //console.log(JSON.stringify(data));
+        if (options.whitelistRegEx.length > 0) {
+          var events = filterEventsByAppId(data);
+          events.forEach(function(ev) { sendSlackMessage(name, ev); });          
+        } else {
+          sendSlackMessage(name, data);           
+        }
     }
 });
+
+function filterEventsByAppId(data){
+  var events = [];
+  options.whitelistRegEx.forEach(function (rx){
+    if (data.appId && rx.test(data.appId.toLowerCase())) {
+      events.push(data);
+    }
+    if (data.currentStep && data.currentStep.actions){
+      data.currentStep.actions.forEach(function(action){
+        if (rx.test(action.app.toLowerCase())) events.push(data); 
+      });
+    }
+  });
+  return events;
+}
+
+function sendSlackMessage(name, data){
+  slackHandler.sendMessage(slackHandler.renderMessage({ type: name, data: data }));
+}
 
 // Add handlers to options
 options.handlers = handlers;
