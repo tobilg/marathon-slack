@@ -56,6 +56,7 @@ options.eventTypes.forEach(function (eventType) {
           var events = slackHandler.filterEventsByAppId(data,options.whitelistRegex[0]);
           events.forEach(function(ev) { 
             slackHandler.sendMessage(slackHandler.renderMessage({ type: name, data: ev }));
+          });
         } else {
           slackHandler.sendMessage(slackHandler.renderMessage({ type: name, data: data }));
         }
