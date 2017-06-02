@@ -11,7 +11,8 @@ const SlackHandler = require("./lib/SlackHandler");
 let options = {
     marathonHost: process.env.MARATHON_HOST || "master.mesos",
     marathonPort: process.env.MARATHON_PORT || 8080,
-    marathonProtocol: process.env.MARATHON_PROTOCOL || "http"
+    marathonProtocol: process.env.MARATHON_PROTOCOL || "http",
+    whitelistRegEx: []
 };
 
 // Instantiate SlackHandler
@@ -33,13 +34,32 @@ if (process.env.EVENT_TYPES) {
     options.eventTypes = ["deployment_info", "deployment_success", "deployment_failed", "deployment_step_success", "deployment_step_failure", "group_change_success", "group_change_failed", "failed_health_check_event", "health_status_changed_event", "unhealthy_task_kill_event"]
 }
 
+if (process.env.APP_ID_REGEX) {
+    // Use environment variable
+    if (process.env.APP_ID_REGEX) {
+        options.whitelistRegEx = [process.env.APP_ID_REGEX];
+    } else {
+        options.whitelistRegEx = [];
+    }
+    options.whitelistRegEx = options.whitelistRegEx.map(function(rx) { return new RegExp(rx); });
+} else { // Use the default
+    options.whitelistRegEx = []; 
+}
+
 // Placeholder for the handler functions
 let handlers = {};
 
 // Populate handler functions
 options.eventTypes.forEach(function (eventType) {
     handlers[eventType] = function (name, data) {
-        slackHandler.sendMessage(slackHandler.renderMessage({ type: name, data: data }));
+        if (options.whitelistRegEx.length > 0) {
+          var events = slackHandler.filterEventsByAppId(data,options.whitelistRegEx[0]);
+          events.forEach(function(ev) { 
+            slackHandler.sendMessage(slackHandler.renderMessage({ type: name, data: ev }));
+          });
+        } else {
+          slackHandler.sendMessage(slackHandler.renderMessage({ type: name, data: data }));
+        }
     }
 });
 
