@@ -27,6 +27,7 @@ You can configure `marathon-slack` via environment variables.
 * `EVENT_TYPES`: The comma-separated list of event types you want to have sent to Slack, separated by comma. By default, only `deployment_info`, `deployment_success` and `deployment_failed` are activated. See below for a complete list.
 * `APP_ID_REGEX`: A string regular expression to filter events by their
   Marathon App Id. For example to send a slack message for **only** apps with id `"*-production"`.
+
 ### Event types
 
 Each of the following event types is pushed to Slack if not configured via the `EVENT_TYPES` environment variables:
