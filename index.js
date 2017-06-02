@@ -34,12 +34,12 @@ if (process.env.EVENT_TYPES) {
     options.eventTypes = ["deployment_info", "deployment_success", "deployment_failed", "deployment_step_success", "deployment_step_failure", "group_change_success", "group_change_failed", "failed_health_check_event", "health_status_changed_event", "unhealthy_task_kill_event"]
 }
 
-if (process.env.APP_ID_REGEXS) {
+if (process.env.APP_ID_REGEX) {
     // Use environment variable
-    if (process.env.APP_ID_REGEXS.indexOf(",") > -1) {
-        options.whitelistRegEx = process.env.APP_ID_REGEXS.split(",");
+    if (process.env.APP_ID_REGEX) {
+        options.whitelistRegEx = [process.env.APP_ID_REGEX];
     } else {
-        options.whitelistRegEx = [process.env.APP_ID_REGEXS];
+        options.whitelistRegEx = [];
     }
     options.whitelistRegEx = options.whitelistRegEx.map(function(rx) { return new RegExp(rx); });
 } else { // Use the default
@@ -52,34 +52,15 @@ let handlers = {};
 // Populate handler functions
 options.eventTypes.forEach(function (eventType) {
     handlers[eventType] = function (name, data) {
-        //console.log(JSON.stringify(data));
         if (options.whitelistRegEx.length > 0) {
-          var events = filterEventsByAppId(data);
-          events.forEach(function(ev) { sendSlackMessage(name, ev); });          
+          var events = slackHandler.filterEventsByAppId(data,options.whitelistRegex);
+          events.forEach(function(ev) { 
+            slackHandler.sendMessage(slackHandler.renderMessage({ type: name, data: ev }));
         } else {
-          sendSlackMessage(name, data);           
+          slackHandler.sendMessage(slackHandler.renderMessage({ type: name, data: data }));
         }
     }
 });
-
-function filterEventsByAppId(data){
-  var events = [];
-  options.whitelistRegEx.forEach(function (rx){
-    if (data.appId && rx.test(data.appId.toLowerCase())) {
-      events.push(data);
-    }
-    if (data.currentStep && data.currentStep.actions){
-      data.currentStep.actions.forEach(function(action){
-        if (rx.test(action.app.toLowerCase())) events.push(data); 
-      });
-    }
-  });
-  return events;
-}
-
-function sendSlackMessage(name, data){
-  slackHandler.sendMessage(slackHandler.renderMessage({ type: name, data: data }));
-}
 
 // Add handlers to options
 options.handlers = handlers;
