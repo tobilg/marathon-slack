@@ -3,67 +3,69 @@
 // Check if we got the necessary info from the environment, otherwise fail directly!
 require("require-environment-variables")(["SLACK_WEBHOOK_URL"]);
 
-// Use the MarathonEventBusClient
-const MarathonEventBusClient = require("marathon-event-bus-client");
-const SlackHandler = require("./lib/SlackHandler");
+// Instantiate Express.js (for the Marathon health checks)
+const express = require("express");
+const app = express();
 
-// Define Marathon options
-let options = {
+// Instantiate Marathon Slack Bridge
+const MarathonSlackBridge = require("./lib/MarathonSlackBridge");
+
+// Configure Marathon Slack Bridge
+const marathonSlackBridge = new MarathonSlackBridge({
     marathonHost: process.env.MARATHON_HOST || "master.mesos",
     marathonPort: process.env.MARATHON_PORT || 8080,
-    marathonProtocol: process.env.MARATHON_PROTOCOL || "http"
+    marathonProtocol: process.env.MARATHON_PROTOCOL || "http",
+    slackWebHook: process.env.SLACK_WEBHOOK_URL, // No default!
+    slackChannel: process.env.SLACK_CHANNEL || "#marathon",
+    slackBotName: process.env.SLACK_BOT_NAME || "Marathon Event Bot",
+    eventTypes: process.env.EVENT_TYPES || null,
+    appIdRegExes: process.env.APP_ID_REGEXES || []
+});
+
+marathonSlackBridge.on("marathon_event", function(event) {
+    console.log("Marathon event: " + JSON.stringify(event));
+});
+
+marathonSlackBridge.on("sent_message", function(message) {
+    console.log("Sent message: " + JSON.stringify(message));
+});
+
+marathonSlackBridge.on("received_reply", function(message) {
+    console.log("Received reply: " + JSON.stringify(message));
+});
+
+marathonSlackBridge.on("subscribed", function(event) {
+    console.log(event.message);
+});
+
+marathonSlackBridge.on("unsubscribed", function(event) {
+    console.log(event.message);
+});
+
+marathonSlackBridge.on("error", function(event) {
+    console.log(event.message);
+});
+
+// Start Marathon Slack Bridge
+marathonSlackBridge.start();
+
+// Define API options
+let apiOptions = {
+    ipAddress: process.env.HOST || "0.0.0.0",
+    port: process.env.PORT || 3000
 };
 
-// Instantiate SlackHandler
-const slackHandler = new SlackHandler({
-    slackWebHook: process.env.SLACK_WEBHOOK_URL,
-    slackChannel: process.env.SLACK_CHANNEL || "#marathon",
-    slackBotName: process.env.SLACK_BOT_NAME || "Marathon Event Bot"
-});
-
-// Define relevant event types
-if (process.env.EVENT_TYPES) {
-    // Use environment variable
-    if (process.env.EVENT_TYPES.indexOf(",") > -1) {
-        options.eventTypes = process.env.EVENT_TYPES.split(",");
+// Define health check route
+app.get('/health', function (req, res) {
+    let healthCheckStatusCode = marathonSlackBridge.getHealthStatus();
+    if (healthCheckStatusCode === 200) {
+        res.send("OK");
     } else {
-        options.eventTypes = [process.env.EVENT_TYPES];
-    }
-} else { // Use the default
-    options.eventTypes = ["deployment_info", "deployment_success", "deployment_failed", "deployment_step_success", "deployment_step_failure", "group_change_success", "group_change_failed", "failed_health_check_event", "health_status_changed_event", "unhealthy_task_kill_event"]
-}
-
-// Placeholder for the handler functions
-let handlers = {};
-
-// Populate handler functions
-options.eventTypes.forEach(function (eventType) {
-    handlers[eventType] = function (name, data) {
-        slackHandler.sendMessage(slackHandler.renderMessage({ type: name, data: data }));
+        res.status(healthCheckStatusCode).send();
     }
 });
 
-// Add handlers to options
-options.handlers = handlers;
-
-// Create MarathonEventBusClient instance
-const mebc = new MarathonEventBusClient(options);
-
-// Wait for "connected" event
-mebc.on("subscribed", function () {
-    console.log("Subscribed to the Marathon Event Bus");
+// Start Express.js server
+const server = app.listen(apiOptions.port, apiOptions.ipAddress, function () {
+    console.log("Express server listening on port " + server.address().port + " on " + server.address().address);
 });
-
-// Wait for "unsubscribed" event
-mebc.on("unsubscribed", function () {
-    console.log("Unsubscribed from the Marathon Event Bus");
-});
-
-// Catch error events
-mebc.on("error", function (errorObj) {
-    console.log("Got an error on " + errorObj.timestamp + ":");
-    console.log(JSON.stringify(errorObj.error));
-});
-
-// Subscribe to Marathon Event Bus
-mebc.subscribe();
