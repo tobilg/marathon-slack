@@ -1,6 +1,6 @@
 # marathon-slack
 
-[![NSP Status](https://nodesecurity.io/orgs/tobilg/projects/bb967956-9682-4b37-9e41-68852d242d7a/badge)](https://nodesecurity.io/orgs/tobilg/projects/bb967956-9682-4b37-9e41-68852d242d7a) 
+[![NSP Status](https://nodesecurity.io/orgs/tobilg/projects/bb967956-9682-4b37-9e41-68852d242d7a/badge)](https://nodesecurity.io/orgs/tobilg/projects/bb967956-9682-4b37-9e41-68852d242d7a) [![Build Status](https://travis-ci.org/tobilg/marathon-slack.svg?branch=master)](https://travis-ci.org/tobilg/marathon-slack) 
 
 Listen to Marathon's Event Bus and send selected event types to a Slack WebHook!
 
@@ -24,7 +24,10 @@ You can configure `marathon-slack` via environment variables.
 * `SLACK_WEBHOOK_URL`: The Slack Webhook URL (**mandatory**).
 * `SLACK_CHANNEL`: The name of the Slack channel to send the messages to (must contain `#`). Default is `#marathon`.
 * `SLACK_BOT_NAME`: The name of the Slack bot to send the messages from. Default is `Marathon Event Bot`.
-* `EVENT_TYPES`: The comma-separated list of event types you want to have sent to Slack, separated by comma. By default, only `deployment_info`, `deployment_success` and `deployment_failed` are activated. See below for a complete list.
+* `EVENT_TYPES`: The comma-separated list of event types you want to have sent to Slack, separated by comma. By default, all the below events are activated.
+* `HOST`: The IP address the API should listen on. Normally, this will be automatically provided by Marathon. Default is `0.0.0.0`.
+* `PORT`: The port number on which the API should listen on. Normally, this will be automatically provided by Marathon. Default is `3000`.
+* `APP_ID_REGEXES`: A string regular expression to filter events by their Marathon App Id. For example to send a slack message for **only** apps with id `"*-production"`. If you want multiple regular expressions, you can concatenate them with a comma.
 
 ### Event types
 
@@ -91,16 +94,40 @@ You can run this on Marathon like this:
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "tobilg/marathon-slack:0.3.0",
+      "image": "tobilg/marathon-slack:0.4.0",
       "network": "HOST",
       "privileged": false,
-      "parameters": [],
       "forcePullImage": true
     }
   },
   "env": {
     "SLACK_WEBHOOK_URL": "YOUR_WEBHOOK_URL"
-  }
+  },
+  "labels":{
+    "MARATHON_SINGLE_INSTANCE_APP": "true",
+  },
+  "upgradeStrategy":{
+    "minimumHealthCapacity": 0,
+    "maximumOverCapacity": 0
+  },
+  "portDefinitions": [
+    {
+      "port": 0,
+      "protocol": "tcp",
+      "name": "api"
+    }
+  ],
+  "requirePorts": false,
+  "healthChecks": [
+    {
+      "protocol": "HTTP",
+      "portIndex": 0,
+      "path": "/health",
+      "gracePeriodSeconds": 5,
+      "intervalSeconds": 20,
+      "maxConsecutiveFailures": 3
+    }
+  ]
 }
 ``` 
 
