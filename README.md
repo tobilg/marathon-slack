@@ -104,7 +104,7 @@ You can run this on Marathon like this:
     "SLACK_WEBHOOK_URL": "YOUR_WEBHOOK_URL"
   },
   "labels":{
-    "MARATHON_SINGLE_INSTANCE_APP": "true",
+    "MARATHON_SINGLE_INSTANCE_APP": "true"
   },
   "upgradeStrategy":{
     "minimumHealthCapacity": 0,
