@@ -70,6 +70,10 @@ describe("marathon-slack tests", function() {
         return slackMock.rtm.stopServer(botToken);
     });
 
+    afterEach(function () {
+        return slackMock.incomingWebhooks.reset();
+    })
+
     describe("Using MarathonEventBusMockServer", function () {
 
         this.timeout(5000);
@@ -97,6 +101,48 @@ describe("marathon-slack tests", function() {
                     const firstCall = slackMock.incomingWebhooks.calls[0];
 
                     expect(firstCall.params.attachments[0].title).to.equal("Deployment info");
+
+                });
+
+        });
+        
+        it("Should connect and receive a 'unhealthy_task_kill_event' event", () => {
+
+            return delay(250) // Wait for Marathon Slack Bridge startup
+                .then(() => {
+                    return new Promise(function (resolve, reject) {
+                        server.requestEvent("unhealthy_task_kill_event");
+                        resolve();
+                    })
+                })
+                .then(delay(1000))
+                .then(() => {
+                    expect(slackMock.incomingWebhooks.calls).to.have.length(1);
+
+                    const firstCall = slackMock.incomingWebhooks.calls[0];
+
+                    expect(firstCall.params.attachments[0].title).to.equal("Unhealthy task was killed");
+
+                });
+        });
+
+        it("Should connect and receive a 'status_update_event' event", () => {
+
+            return delay(250) // Wait for Marathon Slack Bridge startup
+                .then(() => {
+                    return new Promise(function (resolve, reject) {
+                        server.requestEvent("status_update_event");
+                        resolve();
+                    })
+                })
+                .then(delay(1000))
+                .then(() => {
+
+                    expect(slackMock.incomingWebhooks.calls).to.have.length(1);
+
+                    const firstCall = slackMock.incomingWebhooks.calls[0];
+
+                    expect(firstCall.params.attachments[0].title).to.equal("Status update event");
 
                 });
 
