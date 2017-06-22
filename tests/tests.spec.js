@@ -27,14 +27,12 @@ describe("marathon-slack tests", function() {
 
         // Configure Marathon Slack Bridge
         marathonSlackBridge = new MarathonSlackBridge({
-            marathonHost: process.env.MARATHON_HOST || "localhost",
-            marathonPort: process.env.MARATHON_PORT || 8080,
-            marathonProtocol: process.env.MARATHON_PROTOCOL || "http",
-            slackWebHook: process.env.SLACK_WEBHOOK_URL,
-            slackChannel: process.env.SLACK_CHANNEL || "#marathon",
-            slackBotName: process.env.SLACK_BOT_NAME || "Marathon Event Bot",
-            eventTypes: process.env.EVENT_TYPES || null,
-            appIdRegExes: process.env.APP_ID_REGEXES || []
+            marathonHost: "localhost",
+            marathonPort: 8080,
+            marathonProtocol: "http",
+            slackWebHook: "https://hooks.slack.com/services/XXX/YYY/ZZZ",
+            slackChannel: "#marathon",
+            slackBotName: "Marathon Event Bot",
         });
 
         marathonSlackBridge.on("marathon_event", function(event) {
