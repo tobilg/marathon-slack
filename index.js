@@ -35,15 +35,15 @@ marathonSlackBridge.on("received_reply", function(message) {
 });
 
 marathonSlackBridge.on("subscribed", function(event) {
-    console.log(event.message);
+    console.log("Subscribed to the Marathon Event Bus: " + JSON.stringify(event));
 });
 
 marathonSlackBridge.on("unsubscribed", function(event) {
-    console.log(event.message);
+    console.log("Unsubscribed to the Marathon Event Bus: " + JSON.stringify(event));
 });
 
 marathonSlackBridge.on("error", function(event) {
-    console.log(event.message);
+    console.log("Error: " + JSON.stringify(event));
 });
 
 // Start Marathon Slack Bridge

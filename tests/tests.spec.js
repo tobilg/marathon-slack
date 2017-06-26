@@ -27,14 +27,12 @@ describe("marathon-slack tests", function() {
 
         // Configure Marathon Slack Bridge
         marathonSlackBridge = new MarathonSlackBridge({
-            marathonHost: process.env.MARATHON_HOST || "localhost",
-            marathonPort: process.env.MARATHON_PORT || 8080,
-            marathonProtocol: process.env.MARATHON_PROTOCOL || "http",
-            slackWebHook: process.env.SLACK_WEBHOOK_URL,
-            slackChannel: process.env.SLACK_CHANNEL || "#marathon",
-            slackBotName: process.env.SLACK_BOT_NAME || "Marathon Event Bot",
-            eventTypes: process.env.EVENT_TYPES || null,
-            appIdRegExes: process.env.APP_ID_REGEXES || []
+            marathonHost: "localhost",
+            marathonPort: 8080,
+            marathonProtocol: "http",
+            slackWebHook: "https://hooks.slack.com/services/XXX/YYY/ZZZ",
+            slackChannel: "#marathon",
+            slackBotName: "Marathon Event Bot",
         });
 
         marathonSlackBridge.on("marathon_event", function(event) {
@@ -70,6 +68,10 @@ describe("marathon-slack tests", function() {
         return slackMock.rtm.stopServer(botToken);
     });
 
+    afterEach(function () {
+        return slackMock.incomingWebhooks.reset();
+    })
+
     describe("Using MarathonEventBusMockServer", function () {
 
         this.timeout(5000);
@@ -100,6 +102,26 @@ describe("marathon-slack tests", function() {
 
                 });
 
+        });
+        
+        it("Should connect and receive a 'unhealthy_task_kill_event' event", () => {
+
+            return delay(250) // Wait for Marathon Slack Bridge startup
+                .then(() => {
+                    return new Promise(function (resolve, reject) {
+                        server.requestEvent("unhealthy_task_kill_event");
+                        resolve();
+                    })
+                })
+                .then(delay(1000))
+                .then(() => {
+                    expect(slackMock.incomingWebhooks.calls).to.have.length(1);
+
+                    const firstCall = slackMock.incomingWebhooks.calls[0];
+
+                    expect(firstCall.params.attachments[0].title).to.equal("Unhealthy task was killed");
+
+                });
         });
 
     });
