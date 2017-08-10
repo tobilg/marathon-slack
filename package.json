@@ -1,6 +1,6 @@
 {
   "name": "marathon-slack",
-  "version": "0.4.1",
+  "version": "0.4.3",
   "description": "Listen to Marathon's Event Bus and send selected event types to a Slack WebHook",
   "main": "index.js",
   "scripts": {
