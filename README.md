@@ -24,7 +24,9 @@ You can configure `marathon-slack` via environment variables.
 * `SLACK_WEBHOOK_URL`: The Slack Webhook URL (**mandatory**).
 * `SLACK_CHANNEL`: The name of the Slack channel to send the messages to (must contain `#`). Default is `#marathon`.
 * `SLACK_BOT_NAME`: The name of the Slack bot to send the messages from. Default is `Marathon Event Bot`.
-* `EVENT_TYPES`: The comma-separated list of event types you want to have sent to Slack, separated by comma. By default, all the below events are activated.
+* `EVENT_TYPES`: The comma-separated list of event types you want to have sent to Slack. By default, all the below events are activated.
+* `TASK_STATUSES`: The comma-separated list of Mesos TaskStatuses that you want to have sent to Slack. By default, the below statuses are activated if the environment variable `PUBLISH_TASK_STATUS_UPDATES` is set to `true`.
+* `PUBLISH_TASK_STATUS_UPDATES`: Can be set to `true` if the TaskStatus update message should be published. Default is `false`.
 * `HOST`: The IP address the API should listen on. Normally, this will be automatically provided by Marathon. Default is `0.0.0.0`.
 * `PORT`: The port number on which the API should listen on. Normally, this will be automatically provided by Marathon. Default is `3000`.
 * `APP_ID_REGEXES`: A string regular expression to filter events by their Marathon App Id. For example to send a slack message for **only** apps with id `"*-production"`. If you want multiple regular expressions, you can concatenate them with a comma.
@@ -43,6 +45,17 @@ Each of the following event types is pushed to Slack if not configured via the `
 * `failed_health_check_event`
 * `health_status_changed_event`
 * `unhealthy_task_kill_event`
+
+If `PUBLISH_TASK_STATUS_UPDATES` is set to `true`, the `status_update_event` event is handled as well. Please be aware that this may cause a lot of messages to be delivered to the specified Slack channel! If activated, you can use the `TASK_STATUSES` environment variable to specify the list of TaskStatuses you want to publish. If not, all the task status update messages will be published:
+
+* `TASK_STAGING`
+* `TASK_STARTING`
+* `TASK_RUNNING`
+* `TASK_FINISHED`
+* `TASK_FAILED`
+* `TASK_KILLING`
+* `TASK_KILLED`
+* `TASK_LOST`
 
 An individual, formatted Slack message is currently only for these event types. If another event is received, it will be displayed with a default formatting of event type and timestamp. 
 
