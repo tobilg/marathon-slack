@@ -20,6 +20,7 @@ const marathonSlackBridge = new MarathonSlackBridge({
     slackBotName: process.env.SLACK_BOT_NAME || "Marathon Event Bot",
     eventTypes: process.env.EVENT_TYPES || null,
     taskStatuses: process.env.TASK_STATUSES || null,
+    publishTaskStatusUpdates: process.env.PUBLISH_TASK_STATUS_UPDATES || "false",
     appIdRegExes: process.env.APP_ID_REGEXES || []
 });
 
