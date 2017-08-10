@@ -33,6 +33,7 @@ describe("marathon-slack tests", function() {
             slackWebHook: "https://hooks.slack.com/services/XXX/YYY/ZZZ",
             slackChannel: "#marathon",
             slackBotName: "Marathon Event Bot",
+            publishTaskStatusUpdates: "true"
         });
 
         marathonSlackBridge.on("marathon_event", function(event) {
