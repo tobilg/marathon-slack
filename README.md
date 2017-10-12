@@ -4,12 +4,12 @@
 
 Ben Smith: Heads up. I haven't put this on circle because we dont plan on doing active development. If you want to redeploy, you can build locally and push with the following commands.
 
-[Log into docker]
-docker build -t marathon-slack .
-docker tag marathon-slack:latest 303214696237.dkr.ecr.us-east-1.amazonaws.com/marathon-slack:latest
-aws ecr get-login --region us-east-1
-[run the command that gets returned]
-docker push 303214696237.dkr.ecr.us-east-1.amazonaws.com/marathon-slack:latest
+[Log into docker] <br>
+docker build -t marathon-slack . <br>
+docker tag marathon-slack:latest 303214696237.dkr.ecr.us-east-1.amazonaws.com/marathon-slack:latest <br>
+aws ecr get-login --region us-east-1 <br>
+[run the command that gets returned] <br>
+docker push 303214696237.dkr.ecr.us-east-1.amazonaws.com/marathon-slack:latest <br>
 
 Then redeploy on marathon: http://mesos.xdotai-internal.net:8080/ui/#/apps/%2Fmarathon-slack
 
