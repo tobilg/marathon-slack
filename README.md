@@ -2,6 +2,17 @@
 
 [![NSP Status](https://nodesecurity.io/orgs/tobilg/projects/bb967956-9682-4b37-9e41-68852d242d7a/badge)](https://nodesecurity.io/orgs/tobilg/projects/bb967956-9682-4b37-9e41-68852d242d7a) [![Build Status](https://travis-ci.org/tobilg/marathon-slack.svg?branch=master)](https://travis-ci.org/tobilg/marathon-slack) 
 
+Ben Smith: Heads up. I haven't put this on circle because we dont plan on doing active development. If you want to redeploy, you can build locally and push with the following commands.
+
+[Log into docker] <br>
+docker build -t marathon-slack . <br>
+docker tag marathon-slack:latest 303214696237.dkr.ecr.us-east-1.amazonaws.com/marathon-slack:latest <br>
+aws ecr get-login --region us-east-1 <br>
+[run the command that gets returned] <br>
+docker push 303214696237.dkr.ecr.us-east-1.amazonaws.com/marathon-slack:latest <br>
+
+Then redeploy on marathon: http://mesos.xdotai-internal.net:8080/ui/#/apps/%2Fmarathon-slack
+
 Listen to Marathon's Event Bus and send selected event types to a Slack WebHook!
 
 ## Preparations
