@@ -18,3 +18,10 @@ node_modules
 
 # WebStorm files
 .idea
+
+.vscode/*
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+.history/
