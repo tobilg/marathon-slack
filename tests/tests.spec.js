@@ -73,7 +73,7 @@ describe("marathon-slack", function () {
             this.timeout(5000);
 
             const port = 8080;
-            const server = new MarathonEventBusMockServer(port);
+            const server = new MarathonEventBusMockServer(port, true);
     
             before(server.listen.bind(server));
             after(server.close.bind(server));
@@ -226,7 +226,7 @@ describe("marathon-slack", function () {
             this.timeout(5000);
 
             const port = 8081;
-            const server = new MarathonEventBusMockServer(port, 1.4);
+            const server = new MarathonEventBusMockServer(port);
     
             before(server.listen.bind(server));
             after(server.close.bind(server));

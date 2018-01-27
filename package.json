@@ -42,7 +42,7 @@
   "devDependencies": {
     "delay": "^2.0.0",
     "chai": "^4.0.0",
-    "marathon-event-bus-mock": "git+https://github.com/idanto/marathon-event-bus-mock.git",
+    "marathon-event-bus-mock": "0.1.3",
     "mocha": "^3.4.2",
     "publish-please": "^2.3.1",
     "slack-mock": "^1.0.1"
