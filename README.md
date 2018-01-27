@@ -107,7 +107,7 @@ You can run this on Marathon like this:
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "tobilg/marathon-slack:0.4.0",
+      "image": "tobilg/marathon-slack:0.4.5",
       "network": "HOST",
       "privileged": false,
       "forcePullImage": true
