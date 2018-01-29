@@ -27,7 +27,6 @@ You can configure `marathon-slack` via environment variables.
 * `EVENT_TYPES`: The comma-separated list of event types you want to have sent to Slack. By default, all the below events are activated.
 * `TASK_STATUSES`: The comma-separated list of Mesos TaskStatuses that you want to have sent to Slack. By default, the below statuses are activated if the environment variable `PUBLISH_TASK_STATUS_UPDATES` is set to `true`.
 * `PUBLISH_TASK_STATUS_UPDATES`: Can be set to `true` if the TaskStatus update message should be published. Default is `false`.
-* `HOST`: The IP address the API should listen on. Normally, this will be automatically provided by Marathon. Default is `0.0.0.0`.
 * `PORT`: The port number on which the API should listen on. Normally, this will be automatically provided by Marathon. Default is `3000`.
 * `APP_ID_REGEXES`: A string regular expression to filter events by their Marathon App Id. For example to send a slack message for **only** apps with id `"*-production"`. If you want multiple regular expressions, you can concatenate them with a comma.
 
