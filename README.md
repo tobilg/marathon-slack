@@ -1,17 +1,20 @@
 # marathon-slack
 
-[![NSP Status](https://nodesecurity.io/orgs/tobilg/projects/bb967956-9682-4b37-9e41-68852d242d7a/badge)](https://nodesecurity.io/orgs/tobilg/projects/bb967956-9682-4b37-9e41-68852d242d7a) [![Build Status](https://travis-ci.org/tobilg/marathon-slack.svg?branch=master)](https://travis-ci.org/tobilg/marathon-slack) 
+[![NSP Status](https://nodesecurity.io/orgs/tobilg/projects/bb967956-9682-4b37-9e41-68852d242d7a/badge)](https://nodesecurity.io/orgs/tobilg/projects/bb967956-9682-4b37-9e41-68852d242d7a) [![Build Status](https://travis-ci.org/tobilg/marathon-slack.svg?branch=master)](https://travis-ci.org/tobilg/marathon-slack)
 
-Ben Smith: Heads up. I haven't put this on circle because we dont plan on doing active development. If you want to redeploy, you can build locally and push with the following commands.
+## X.ai specific doumentation
+Do build and deploy to marathon do the following:
 
-[Log into docker] <br>
-docker build -t marathon-slack . <br>
-docker tag marathon-slack:latest 303214696237.dkr.ecr.us-east-1.amazonaws.com/marathon-slack:latest <br>
-aws ecr get-login --region us-east-1 <br>
-[run the command that gets returned] <br>
-docker push 303214696237.dkr.ecr.us-east-1.amazonaws.com/marathon-slack:latest <br>
-
-Then redeploy on marathon: http://mesos.xdotai-internal.net:8080/ui/#/apps/%2Fmarathon-slack
+1. Ensure you have Docker Running.
+2. Run `docker build -t marathon-slack .`
+3. Tag the build: `docker tag marathon-slack:<build-num> 303214696237.dkr.ecr.us-east-1.amazonaws.com/marathon-<build-num>``
+4. Loging to AWS: `aws ecr get-login --region us-east-1 --no-include-email`
+5. Copy what is returned by that call and run it from the command line.
+6. Push to container to AWS:
+`docker push 303214696237.dkr.ecr.us-east-1.amazonaws.com/marathon-slack:<build-num>`
+7. Deploy the container to Marathon:
+`curl -v -L -H 'Content-Type: application/json' -X PUT -d @marathon.json http://mesos.xdotai-internal.net:8080/v2/apps/%2Fmarathon-slack?force=true`
+##end of x.ai specific doc
 
 Listen to Marathon's Event Bus and send selected event types to a Slack WebHook!
 
@@ -21,7 +24,7 @@ The only preparation that needs to be performed is to add a new WebHook for your
 
 In the next step after clicking the button, you'll have to select the Slack channel to which you want to post the Marathon Event Bus messaged to. Either choose an existing one, or create a new channel like `#marathon`.
 
-After you did that, you'll be guided to an overview page for your new Slack Webhook. Please copy the `Webhook URL`, because you'll need it in the next step. If you want, you can go back to the `Incoming Webhooks` overview page and select the newly created Webhook again. Then, scroll down to the `Integration settings` and customize the name and the icon for this integration if you want. To add a name and icon is *not mandatory* to be able to use `marathon-slack`. 
+After you did that, you'll be guided to an overview page for your new Slack Webhook. Please copy the `Webhook URL`, because you'll need it in the next step. If you want, you can go back to the `Incoming Webhooks` overview page and select the newly created Webhook again. Then, scroll down to the `Integration settings` and customize the name and the icon for this integration if you want. To add a name and icon is *not mandatory* to be able to use `marathon-slack`.
 
 ## Usage
 
@@ -29,9 +32,9 @@ You can configure `marathon-slack` via environment variables.
 
 ### Environment variables
 
-* `MARATHON_HOST`: The Marathon Host (hostname or ip address) where Marathon lives. Default is `master.mesos`, so if you don't use Mesos DNS you'll have to specify this. If you want to use basic auth with Marathon, use `user:password@server.domain.com` as value. 
+* `MARATHON_HOST`: The Marathon Host (hostname or ip address) where Marathon lives. Default is `master.mesos`, so if you don't use Mesos DNS you'll have to specify this. If you want to use basic auth with Marathon, use `user:password@server.domain.com` as value.
 * `MARATHON_PORT`: The port under which Marathon is running. Default is `8080`.
-* `MARATHON_PROTOCOL`: The protocol to access the Marathon API with. Can be either `http` or `https`. Default is `http`. 
+* `MARATHON_PROTOCOL`: The protocol to access the Marathon API with. Can be either `http` or `https`. Default is `http`.
 * `SLACK_WEBHOOK_URL`: The Slack Webhook URL (**mandatory**).
 * `SLACK_CHANNEL`: The name of the Slack channel to send the messages to (must contain `#`). Default is `#marathon`.
 * `SLACK_BOT_NAME`: The name of the Slack bot to send the messages from. Default is `Marathon Event Bot`.
@@ -68,7 +71,7 @@ If `PUBLISH_TASK_STATUS_UPDATES` is set to `true`, the `status_update_event` eve
 * `TASK_KILLED`
 * `TASK_LOST`
 
-An individual, formatted Slack message is currently only for these event types. If another event is received, it will be displayed with a default formatting of event type and timestamp. 
+An individual, formatted Slack message is currently only for these event types. If another event is received, it will be displayed with a default formatting of event type and timestamp.
 
 Please also see the Marathon Event Bus [docs](https://mesosphere.github.io/marathon/docs/event-bus.html).
 
@@ -153,8 +156,8 @@ You can run this on Marathon like this:
     }
   ]
 }
-``` 
+```
 
-Please replace `YOUR_WEBHOOK_URL` with your real Webhook URL. 
+Please replace `YOUR_WEBHOOK_URL` with your real Webhook URL.
 
 It's probably useful to limit the `EVENT_TYPES` to not receive a huge amount of messages. For example, `deployment_info,deployment_success,deployment_failed,failed_health_check_event,health_status_changed_event,unhealthy_task_kill_event` should cover the most important events, without adding too much details.
