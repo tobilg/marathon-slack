@@ -1,0 +1,37 @@
+{
+    "id": "/slack/marathon-slack",
+    "cpus": 0.1,
+    "mem": 128,
+    "disk": 50,
+    "instances": 1,
+    "container": {
+        "type": "DOCKER",
+        "docker": {
+            "image": "303214696237.dkr.ecr.us-east-1.amazonaws.com/marathon-slack:2",
+            "network": "HOST",
+            "privileged": false,
+            "parameters": [],
+            "forcePullImage": true
+        }
+    },
+    "env": {
+        "PUBLISH_TASK_STATUS_UPDATES": "true",
+        "TASK_STATUSES": "TASK_FAILED,TASK_KILLING,TASK_KILLED,TASK_LOST",
+        "SLACK_WEBHOOK_URL": "https://hooks.slack.com/services/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",
+        "MARATHON_HOST": "mesos.xdotai-internal.net",
+        "SLACK_BOT_NAME": "Hal 9000",
+        "EVENT_TYPES": "deployment_failed,failed_health_check_event,unhealthy_task_kill_event"
+    },
+    "healthChecks": [
+      {
+        "path": "/health",
+        "protocol": "HTTP",
+        "portIndex": 0,
+        "gracePeriodSeconds": 300,
+        "intervalSeconds": 60,
+        "timeoutSeconds": 20,
+        "maxConsecutiveFailures": 3,
+        "ignoreHttp1xx": false
+      }
+    ]
+}
